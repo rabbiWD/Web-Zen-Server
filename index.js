@@ -10,8 +10,11 @@ const port = process.env.PORT || 4000;
 app.use(cors());
 app.use(express.json());
 
+//  4oTDagM87LskZGYB  webZen
 
-const uri = `mongodb+srv://${process.env.SITE_USER}:${process.env.SITE_PASS}@cluster0.tachgq7.mongodb.net/?appName=Cluster0`;
+
+// const uri = `mongodb+srv://${process.env.SITE_USER}:${process.env.SITE_PASS}@cluster0.tachgq7.mongodb.net/?appName=Cluster0`;
+const uri = `mongodb+srv://${process.env.SITE_USER}:${process.env.SITE_PASS}@cluster0.vuj5cyn.mongodb.net/?appName=Cluster0`;
 
 // Create a MongoClient with a MongoClientOptions object to set the Stable API version
 const client = new MongoClient(uri, {
@@ -29,7 +32,7 @@ async function run() {
     // await client.connect();
 
     // All collection and Database
-    const db = client.db("FootwearZone");
+    const db = client.db("WebZenDB");
     const usersCollention = db.collection("users");
     const productsCollention = db.collection("products");
     const testimonialsCollection = db.collection("testimonials");
@@ -44,7 +47,11 @@ async function run() {
     // })
 
   // ALl Methords 
-
+  app.get('/api/users', async (req, res) => {
+    const cursor = usersCollention.find();
+    const result = await cursor.toArray();
+    res.send(result);
+  })
 
     app.post('/api/users', async (req, res) => {
       const newUser = req.body;
@@ -81,6 +88,7 @@ async function run() {
     });
 
 
+
         // GET all best seller products
     app.get('/api/products/best-sellers', async (req, res) => {
       try {
@@ -110,7 +118,7 @@ async function run() {
     });
 
 
-    // GET all new arrival products (limit 8)
+    // GET all testimonials (sorted by newest first)
     app.get('/api/testimonials', async (req, res) => {
       try {
         const testimonials = await testimonialsCollection
@@ -234,7 +242,7 @@ run().catch(console.dir);
 
 
 app.get('/', (req, res) => {
-  res.send('FootWaer Zone server is running')
+  res.send('webzen server is running')
 })
 
 app.listen(port, () => {
