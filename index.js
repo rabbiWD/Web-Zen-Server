@@ -46,6 +46,44 @@ async function run() {
   // ALl Methords 
 
 
+    app.post('/api/users', async (req, res) => {
+      const newUser = req.body;
+      const email = req.body.email;
+      const query = { email: email }
+      const existingUser = await usersCollention.findOne(query);
+      if (existingUser) {
+       return  res.send({ message: 'User already exist, Do not need to insert again.' });
+      }
+      else {
+        const result = await usersCollention.insertOne(newUser);
+        return  res.send(result);
+
+      }
+    })
+
+
+    app.get('/api/products', async (req, res) => {
+      try {
+        const category = req.query.category;  // e.g. ?category=kids
+
+        let query = {};
+        if (category) {
+          query.category = { $regex: `^${category}$`, $options: 'i' };
+        }
+
+        const result = await productsCollention.find(query).toArray();
+        res.send(result);
+
+      } catch (error) {
+        console.error(error);
+        res.status(500).send({ error: "Failed to fetch products" });
+      }
+    });
+
+
+
+
+
 
     // Send a ping to confirm a successful connection
     // await client.db("admin").command({ ping: 1 });
